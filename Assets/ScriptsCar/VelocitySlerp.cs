@@ -18,8 +18,6 @@ public class VelocitySlerp : MonoBehaviour {
 			
 			if (distance >= 5f)
 				transform.Translate (Velocidade, 0, 0, Space.World);//Movimentação antes de chegar a 20m
-			
-			if (distance < 5f) {
 			if(angle < 90.0f){
 				angle += Time.deltaTime;
 				transform.Rotate(Mathf.Cos(angle)*Time.deltaTime,0,0);
