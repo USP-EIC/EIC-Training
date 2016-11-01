@@ -5,6 +5,7 @@ public class Nascimento_Prefab : MonoBehaviour {
 
     public GameObject prefab;
     public float wait=0f;
+    public float intervalo_nascimento = 8f;
 	void Start () {
 	
 	}
@@ -13,7 +14,7 @@ public class Nascimento_Prefab : MonoBehaviour {
 	void Update () {
         wait += Time.deltaTime;
 
-        if(wait >=5f)
+        if(wait >= intervalo_nascimento)
         {
             Instantiate(prefab, transform.position, transform.rotation);
             wait = 0f;
