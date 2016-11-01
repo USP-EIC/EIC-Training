@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngineInternal;
 
@@ -33,6 +34,8 @@ public class FOrce : MonoBehaviour
     public bool sw2 = true;
     public bool MaisVel = false;
 
+    public int i = 10;
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -61,6 +64,7 @@ public class FOrce : MonoBehaviour
 	    }
 	    if (Cont%5 != 0)
 	        sw = true;
+        Change();
 	}
 
     //============== TRIGGER ENTER ================
@@ -233,6 +237,14 @@ public class FOrce : MonoBehaviour
     }
 
     // =================== VELCUBE END ====================
+
+    void Change()
+    {
+        if (Cont == 11)
+        {
+            SceneManager.LoadScene(1);
+        }
+    }
 }
 
 
