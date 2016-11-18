@@ -10,6 +10,7 @@ public class ScriptText : MonoBehaviour {
         {
             a += i;
         }
+        Debug.log(a);
 	}
 	
 }
