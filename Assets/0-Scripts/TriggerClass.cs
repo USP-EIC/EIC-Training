@@ -1,7 +1,9 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
+/*/DEACT//
+
+[System.Serializable]
 public class TriggerClass
 {
 
@@ -13,4 +15,9 @@ public class TriggerClass
         Trigger = obje;
         Active = active;
     }
-}
+
+    public void TurnTrue()
+    {
+        Active = true;
+    }
+}*/

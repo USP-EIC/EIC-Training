@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Policy;
 using UnityEditorInternal;
 using UnityEngine.SceneManagement;
 
@@ -21,28 +22,61 @@ using UnityEngine.SceneManagement;
 
 public class LevelController : MonoBehaviour
 {
+    // ===================== CLASSES =============================
+
+    // ============ CLASSE LISTA DE TRIGGERS ===================
+
+    [System.Serializable]
+    public class TriggerClass
+    {
+
+        public GameObject Trigger;
+        public bool Active;
+
+        public TriggerClass(GameObject obje, bool active = false)
+        {
+            //obje.gameObject.AddComponent<TriggerScript>();
+            Trigger = obje;
+            Active = active;
+        }
+
+        public void TurnTrue()
+        {
+            Active = true;
+        }
+    }
+
+    [System.Serializable]
+    public class WrapperClass
+    {
+        public List<TriggerClass> Triggers = new List<TriggerClass>();
+    }
+
+
+
     // ====================  VARIAVEIS =================================
-
-
 
     // Instancia Singleton
     public static LevelController ThisInstance = null;
 
     // Agente causador (PLAYER)
-    public GameObject Commt;
+    public GameObject Player;
     // Agente para mudar de fase (trigger final para mudança de fase)
     public GameObject Rankeador;
 
-    List<TriggerClass> Triggs = new List<TriggerClass>();
+    // Lista de Classe TriggerClass
+    public List<WrapperClass> Niveis = new List<WrapperClass>();
 
     // Array de gameObject de triggers
     //DEACT// public GameObject[] Triggers;
 
     // Array de contadores de triggers ativados para todas as cenas STATIC
+    [HideInInspector]
     public int[] ContTriggLvl = {0, 0, 0, 0, 0};
 
     //Propriedades da cena atual
-    public Scene SceneActu; 
+    public Scene SceneActu;
+    [HideInInspector]
     public int SceneActuInd;
 
 
@@ -58,7 +92,7 @@ public class LevelController : MonoBehaviour
 
     void Update()
     {
-        
+        // adicionar checagem para ver se diminuiu a lista de triggers to nivel atual, se diminuiu, deletar os respectivos objetos
     }
 
     void Awake()
@@ -75,7 +109,10 @@ public class LevelController : MonoBehaviour
 
     public void OnTriggerEnterCaller(Collider other)
     {
-        
+        if (other.gameObject.tag == "Player")
+        {
+            
+        }
     }
 
     public void OnLevelWasLoaded(int level)
@@ -85,8 +122,15 @@ public class LevelController : MonoBehaviour
 
     // =============================== FIM CALLBACK //// FUNCOES GERAIS ========================================
 
+        // =================== FUNCOES DA LISTA DE TRIGGERCLASS ===========================
+
+    public void AddNew(GameObject objt)    // Adiciona nodo na lista de objects de triggers
+    {
+        Niveis.Add(new WrapperClass());
+    }
 
 
+        // ================== LOGGER ========================
 
     void Logger(int cod) // Controla log e erros // código 1xxx = Log // código 2xxx = Warning código 3xxx = Erros
     {
