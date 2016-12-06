@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Security.Policy;
 using UnityEditorInternal;
 using UnityEngine.SceneManagement;
+using System.Linq;
+using UnityEditor;
 
 /* ========== SISTEMA DE COMENTARIOS ============
     Comentario //: Comentario sobre codigo
@@ -32,12 +34,14 @@ public class LevelController : MonoBehaviour
 
         public GameObject Trigger;
         public bool Active;
+        public int Type;
 
-        public TriggerClass(GameObject obje, bool active = false)
+        public TriggerClass(GameObject obje, bool active = false, int type = 1)
         {
             //obje.gameObject.AddComponent<TriggerScript>();
             Trigger = obje;
             Active = active;
+            Type = type;
         }
 
         public void TurnTrue()
@@ -59,11 +63,13 @@ public class LevelController : MonoBehaviour
     // Instancia Singleton
     public static LevelController ThisInstance = null;
 
+    public GameObject Temp;
+    /*
     // Agente causador (PLAYER)
     public GameObject Player;
     // Agente para mudar de fase (trigger final para mudança de fase)
     public GameObject Rankeador;
-
+    */
     // Lista de Classe TriggerClass
     public List<WrapperClass> Niveis = new List<WrapperClass>();
 
@@ -87,7 +93,7 @@ public class LevelController : MonoBehaviour
     void Start()
     {
         ActualScene(); // Atualiza status da cena atual na inicialização
-        
+       
     }
 
     void Update()
@@ -107,11 +113,17 @@ public class LevelController : MonoBehaviour
 
     }
 
-    public void OnTriggerEnterCaller(Collider other)
+    public void OnTriggerEnterCaller(Collider other, GameObject thisobjecte) 
     {
-        if (other.gameObject.tag == "Player")
+        if (thisobjecte.gameObject.tag == "TRIGGERPAI" && other.gameObject.tag == "Player")
         {
             
+            FindAndActivate(thisobjecte);
+        }
+        else if (thisobjecte.gameObject.tag == "Rankeador" && other.gameObject.tag == "Player")
+        {
+            Debug.Log("Entrou");
+            Triggerer();
         }
     }
 
@@ -129,6 +141,17 @@ public class LevelController : MonoBehaviour
         Niveis.Add(new WrapperClass());
     }
 
+    public void FindAndActivate(GameObject thisobject) // Encontra objeto na lista e o ativa
+    {
+        for (int i = 0; i < Niveis[SceneActuInd].Triggers.Count; i++) //ADD// otimizar, transformar em foreach
+        {
+            if (Niveis[SceneActuInd].Triggers[i].Trigger.name == thisobject.name && Niveis[SceneActuInd].Triggers[i].Active == false)
+            {
+                Niveis[SceneActuInd].Triggers[i].Active = true;
+                ContTriggLvl[SceneActuInd]++;
+            }
+        }
+    }
 
         // ================== LOGGER ========================
 
@@ -206,16 +229,18 @@ public class LevelController : MonoBehaviour
     void Triggerer()   // Determina se quantidade de triggers é suficiente para mudar de nivel
     {
         int actuCont = ContTriggLvl[SceneActuInd];
+        int TamTrigg = Niveis[SceneActuInd].Triggers.Count;
+        int Terco = Mathf.RoundToInt((float) (TamTrigg*0.3));
 
-        if (actuCont < 4)
+        if (actuCont < Terco)
         {
             CallNextLevel(1);
         }
-        else if (actuCont >= 4 && actuCont < 12)
+        else if (actuCont >= Terco && actuCont < TamTrigg)
         {
             CallNextLevel(2);
         }
-        else if (actuCont == 12)
+        else if (actuCont == TamTrigg)
         {
             CallNextLevel(3);
         }
@@ -245,8 +270,12 @@ public class LevelController : MonoBehaviour
 
 
 
-
     // ================ FIM FUNCOES GERAIS //// COROTINAS ====================
 
+    public IEnumerator CheckList(int Sec)
+    {
+        //ListElementIsStillThere();
+        yield return new WaitForSeconds(Sec);
+    }
     
 }
